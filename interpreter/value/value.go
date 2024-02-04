@@ -52,6 +52,7 @@ func (v *null) IsLiteral() bool { return false }
 func (v *null) Copy() Value     { return v }
 
 var Null = &null{}
+var NullString = &String{Value: "(null)"}
 
 type Ident struct {
 	Value   string

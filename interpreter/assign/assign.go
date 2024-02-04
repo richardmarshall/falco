@@ -152,7 +152,7 @@ func Assign(left, right value.Value) error {
 			lv.IsNotSet = false
 		case value.IpType: // STRING = IP
 			rv := value.Unwrap[*value.IP](right)
-			lv.Value = rv.Value.String()
+			lv.Value = rv.String()
 			lv.IsNotSet = false
 		default:
 			return errors.WithStack(fmt.Errorf("Invalid assignment for STRING type, got %s", right.Type()))
