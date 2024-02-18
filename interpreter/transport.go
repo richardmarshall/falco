@@ -188,7 +188,7 @@ func (i *Interpreter) getBackendProperty(props []*ast.BackendProperty, key strin
 		return nil, nil
 	}
 
-	val, err := i.ProcessExpression(prop, false)
+	val, err := i.ProcessExpression(prop, DEFAULT)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

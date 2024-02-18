@@ -14,11 +14,11 @@ func TestPrefixExpression(t *testing.T) {
 
 	t.Run("Bang prefix expression", func(t *testing.T) {
 		tests := []struct {
-			name          string
-			expression    *ast.PrefixExpression
-			expect        value.Value
-			isError       bool
-			withCondition bool
+			name       string
+			expression *ast.PrefixExpression
+			expect     value.Value
+			isError    bool
+			flags      uint8
 		}{
 			{
 				name: "inverse boolean",
@@ -62,7 +62,7 @@ func TestPrefixExpression(t *testing.T) {
 				expect: &value.Boolean{
 					Value: false,
 				},
-				withCondition: true,
+				flags: CONDITIONS,
 			},
 			{
 				name: "inverse empty string inside condition",
@@ -78,13 +78,13 @@ func TestPrefixExpression(t *testing.T) {
 				expect: &value.Boolean{
 					Value: false,
 				},
-				withCondition: true,
+				flags: CONDITIONS,
 			},
 		}
 
 		for _, tt := range tests {
 			ip := New(nil)
-			value, err := ip.ProcessPrefixExpression(tt.expression, tt.withCondition)
+			value, err := ip.ProcessPrefixExpression(tt.expression, tt.flags)
 			if tt.isError {
 				if err == nil {
 					t.Errorf("%s expects error but non-nil", tt.name)
@@ -171,7 +171,7 @@ func TestPrefixExpression(t *testing.T) {
 
 		for _, tt := range tests {
 			ip := New(nil)
-			value, err := ip.ProcessPrefixExpression(tt.expression, false)
+			value, err := ip.ProcessPrefixExpression(tt.expression, DEFAULT)
 			if tt.isError {
 				if err == nil {
 					t.Errorf("%s expects error but non-nil", tt.name)

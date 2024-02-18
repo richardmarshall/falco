@@ -207,7 +207,7 @@ func (i *Interpreter) ProcessReturnStatement(stmt *ast.ReturnStatement) State {
 }
 
 func (i *Interpreter) ProcessSetStatement(stmt *ast.SetStatement) error {
-	right, err := i.ProcessExpression(stmt.Value, false)
+	right, err := i.ProcessExpression(stmt.Value, DEFAULT)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -239,7 +239,7 @@ func (i *Interpreter) ProcessAddStatement(stmt *ast.AddStatement) error {
 		)
 	}
 
-	right, err := i.ProcessExpression(stmt.Value, false)
+	right, err := i.ProcessExpression(stmt.Value, DEFAULT)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -308,7 +308,7 @@ func (i *Interpreter) ProcessCallStatement(stmt *ast.CallStatement, ds DebugStat
 func (i *Interpreter) ProcessErrorStatement(stmt *ast.ErrorStatement) error {
 	// Possibility error code is not defined
 	if stmt.Code != nil {
-		code, err := i.ProcessExpression(stmt.Code, false)
+		code, err := i.ProcessExpression(stmt.Code, DEFAULT)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -319,7 +319,7 @@ func (i *Interpreter) ProcessErrorStatement(stmt *ast.ErrorStatement) error {
 	}
 	// Possibility error response is not defined
 	if stmt.Argument != nil {
-		arg, err := i.ProcessExpression(stmt.Argument, false)
+		arg, err := i.ProcessExpression(stmt.Argument, DEFAULT)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -346,7 +346,7 @@ func (i *Interpreter) ProcessEsiStatement(stmt *ast.EsiStatement) error {
 }
 
 func (i *Interpreter) ProcessLogStatement(stmt *ast.LogStatement) error {
-	log, err := i.ProcessExpression(stmt.Value, false)
+	log, err := i.ProcessExpression(stmt.Value, DEFAULT)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -366,7 +366,7 @@ func (i *Interpreter) ProcessLogStatement(stmt *ast.LogStatement) error {
 }
 
 func (i *Interpreter) ProcessSyntheticStatement(stmt *ast.SyntheticStatement) error {
-	val, err := i.ProcessExpression(stmt.Value, false)
+	val, err := i.ProcessExpression(stmt.Value, DEFAULT)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -380,7 +380,7 @@ func (i *Interpreter) ProcessSyntheticStatement(stmt *ast.SyntheticStatement) er
 }
 
 func (i *Interpreter) ProcessSyntheticBase64Statement(stmt *ast.SyntheticBase64Statement) error {
-	val, err := i.ProcessExpression(stmt.Value, false)
+	val, err := i.ProcessExpression(stmt.Value, DEFAULT)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -434,7 +434,7 @@ func (i *Interpreter) ProcessFunctionCallStatement(stmt *ast.FunctionCallStateme
 			}
 		} else {
 			// Otherwize, make value by processing expression
-			a, err := i.ProcessExpression(stmt.Arguments[j], false)
+			a, err := i.ProcessExpression(stmt.Arguments[j], DEFAULT)
 			if err != nil {
 				return NONE, errors.WithStack(err)
 			}
@@ -464,7 +464,7 @@ func (i *Interpreter) ProcessIfStatement(
 	isReturnAsValue bool,
 ) (value.Value, State, error) {
 	// if
-	cond, err := i.ProcessExpression(stmt.Condition, true)
+	cond, err := i.ProcessExpression(stmt.Condition, CONDITIONS)
 	if err != nil {
 		return value.Null, NONE, errors.WithStack(err)
 	}
@@ -507,7 +507,7 @@ func (i *Interpreter) ProcessIfStatement(
 		if ds != DebugStepOut {
 			ds = i.Debugger.Run(ei)
 		}
-		cond, err := i.ProcessExpression(ei.Condition, true)
+		cond, err := i.ProcessExpression(ei.Condition, CONDITIONS)
 		if err != nil {
 			return value.Null, NONE, errors.WithStack(err)
 		}
@@ -575,7 +575,7 @@ func (i *Interpreter) ProcessSwitchStatement(
 			))
 		}
 	}
-	expr, err := i.ProcessExpression(stmt.Control, false)
+	expr, err := i.ProcessExpression(stmt.Control, DEFAULT)
 	if err != nil {
 		return value.Null, NONE, errors.WithStack(err)
 	}
@@ -633,7 +633,7 @@ func (i *Interpreter) ProcessCaseStatement(
 	if stmt.Default == offset || isFallthrough {
 		matched = true
 	} else {
-		right, err := i.ProcessExpression(stmt.Cases[offset].Test.Right, false)
+		right, err := i.ProcessExpression(stmt.Cases[offset].Test.Right, DEFAULT)
 		if err != nil {
 			return value.Null, NONE, false, err
 		}

@@ -14,7 +14,7 @@ import (
 	"github.com/ysugimoto/falco/types"
 )
 
-func (i *Interpreter) IdentValue(val string, withCondition bool) (value.Value, error) {
+func (i *Interpreter) IdentValue(val string, flags uint8) (value.Value, error) {
 	// Extra lookups identity - call additional ident finder if defined
 	// This feature is implemented for testing, typically we do not use for interpreter working
 	if i.IdentResolver != nil {
@@ -42,7 +42,7 @@ func (i *Interpreter) IdentValue(val string, withCondition bool) (value.Value, e
 			return v, nil
 		}
 	} else if v, err := i.vars.Get(i.ctx.Scope, val); err != nil {
-		if withCondition {
+		if flags&CONDITIONS == CONDITIONS {
 			return value.Null, nil
 		} else {
 			return value.Null, errors.WithStack(err)
@@ -52,21 +52,27 @@ func (i *Interpreter) IdentValue(val string, withCondition bool) (value.Value, e
 	}
 }
 
+const (
+	DEFAULT    uint8 = 0
+	CONDITIONS       = 1 << iota
+	NOCONCAT
+)
+
 // Evaluate expression
-// withCondition boolean is special flag for evaluating expression,
+// flags uint8ean is special flag for evaluating expression,
 // used for if condition, parenthesis wrapped expression.
 // On if condition, prefix expression could use "!" prefix operator for null value.
 //
 // For example:
 //
-//	withCondition: true  -> if (!req.http.Foo) { ... } // Valid, req.http.Foo is nullable string but can be inverse as false
-//	withCondition: false -> set var.bool = (!req.http.Foo); // Complicated but valid, "!" prefix operator could  use for right expression
-//	withCondition: false -> set var.bool = !req.http.Foo;   // Invalid, bare "!" prefix operator could not use for right expression
-func (i *Interpreter) ProcessExpression(exp ast.Expression, withCondition bool) (value.Value, error) {
+//	flags: true  -> if (!req.http.Foo) { ... } // Valid, req.http.Foo is nullable string but can be inverse as false
+//	flags: false -> set var.bool = (!req.http.Foo); // Complicated but valid, "!" prefix operator could  use for right expression
+//	flags: false -> set var.bool = !req.http.Foo;   // Invalid, bare "!" prefix operator could not use for right expression
+func (i *Interpreter) ProcessExpression(exp ast.Expression, flags uint8) (value.Value, error) {
 	switch t := exp.(type) {
 	// Underlying VCL type expressions
 	case *ast.Ident:
-		return i.IdentValue(t.Value, withCondition)
+		return i.IdentValue(t.Value, flags)
 	case *ast.IP:
 		return &value.IP{Value: net.ParseIP(t.Value), Literal: true}, nil
 	case *ast.Boolean:
@@ -103,24 +109,24 @@ func (i *Interpreter) ProcessExpression(exp ast.Expression, withCondition bool) 
 		}
 		return &value.RTime{Value: val, Literal: true}, nil
 
-	// Combinated expressions
+	// Combined expressions
 	case *ast.PrefixExpression:
-		return i.ProcessPrefixExpression(t, withCondition)
+		return i.ProcessPrefixExpression(t, flags)
 	case *ast.GroupedExpression:
 		return i.ProcessGroupedExpression(t)
 	case *ast.InfixExpression:
-		return i.ProcessInfixExpression(t, withCondition)
+		return i.ProcessInfixExpression(t, flags)
 	case *ast.IfExpression:
 		return i.ProcessIfExpression(t)
 	case *ast.FunctionCallExpression:
-		return i.ProcessFunctionCallExpression(t, withCondition)
+		return i.ProcessFunctionCallExpression(t, flags)
 	default:
 		return value.Null, exception.Runtime(&exp.GetMeta().Token, "Undefined expression found")
 	}
 }
 
-func (i *Interpreter) ProcessPrefixExpression(exp *ast.PrefixExpression, withCondition bool) (value.Value, error) {
-	v, err := i.ProcessExpression(exp.Right, withCondition)
+func (i *Interpreter) ProcessPrefixExpression(exp *ast.PrefixExpression, flags uint8) (value.Value, error) {
+	v, err := i.ProcessExpression(exp.Right, flags)
 	if err != nil {
 		return value.Null, errors.WithStack(err)
 	}
@@ -131,16 +137,13 @@ func (i *Interpreter) ProcessPrefixExpression(exp *ast.PrefixExpression, withCon
 		case *value.Boolean:
 			return &value.Boolean{Value: !t.Value}, nil
 		case *value.String:
-			// If withCondition is enabled, STRING could be converted to BOOL
-			if !withCondition {
+			// If CONDITION flag is set, STRING could be converted to BOOL
+			if flags&CONDITIONS != CONDITIONS {
 				return value.Null, errors.WithStack(
 					exception.Runtime(&exp.GetMeta().Token, `Unexpected "!" prefix operator for %v`, v),
 				)
 			}
-			if t.IsNotSet {
-				return &value.Boolean{Value: true}, nil
-			}
-			return &value.Boolean{Value: false}, nil
+			return &value.Boolean{Value: t.IsNotSet}, nil
 		default:
 			return value.Null, errors.WithStack(
 				exception.Runtime(&exp.GetMeta().Token, `Unexpected "!" prefix operator for %v`, v),
@@ -173,7 +176,7 @@ func (i *Interpreter) ProcessPrefixExpression(exp *ast.PrefixExpression, withCon
 }
 
 func (i *Interpreter) ProcessGroupedExpression(exp *ast.GroupedExpression) (value.Value, error) {
-	v, err := i.ProcessExpression(exp.Right, true)
+	v, err := i.ProcessExpression(exp.Right, CONDITIONS)
 	if err != nil {
 		return value.Null, errors.WithStack(err)
 	}
@@ -181,7 +184,7 @@ func (i *Interpreter) ProcessGroupedExpression(exp *ast.GroupedExpression) (valu
 }
 
 func (i *Interpreter) ProcessIfExpression(exp *ast.IfExpression) (value.Value, error) {
-	cond, err := i.ProcessExpression(exp.Condition, true)
+	cond, err := i.ProcessExpression(exp.Condition, CONDITIONS)
 	if err != nil {
 		return value.Null, errors.WithStack(err)
 	}
@@ -189,23 +192,23 @@ func (i *Interpreter) ProcessIfExpression(exp *ast.IfExpression) (value.Value, e
 	switch t := cond.(type) {
 	case *value.Boolean:
 		if t.Value {
-			return i.ProcessExpression(exp.Consequence, false)
+			return i.ProcessExpression(exp.Consequence, DEFAULT)
 		}
 	case *value.String:
 		if !t.IsNotSet {
-			return i.ProcessExpression(exp.Consequence, false)
+			return i.ProcessExpression(exp.Consequence, DEFAULT)
 		}
 	default:
 		if cond == value.Null {
-			return i.ProcessExpression(exp.Alternative, false)
+			return i.ProcessExpression(exp.Alternative, DEFAULT)
 		}
 		return value.Null, exception.Runtime(&exp.GetMeta().Token, "If condition returns not boolean")
 	}
 
-	return i.ProcessExpression(exp.Alternative, false)
+	return i.ProcessExpression(exp.Alternative, DEFAULT)
 }
 
-func (i *Interpreter) ProcessFunctionCallExpression(exp *ast.FunctionCallExpression, withCondition bool) (value.Value, error) {
+func (i *Interpreter) ProcessFunctionCallExpression(exp *ast.FunctionCallExpression, flags uint8) (value.Value, error) {
 	if sub, ok := i.ctx.SubroutineFunctions[exp.Function.Value]; ok {
 		if len(exp.Arguments) > 0 {
 			return value.Null, exception.Runtime(
@@ -251,7 +254,7 @@ func (i *Interpreter) ProcessFunctionCallExpression(exp *ast.FunctionCallExpress
 				)
 			}
 		} else {
-			a, err := i.ProcessExpression(exp.Arguments[j], withCondition)
+			a, err := i.ProcessExpression(exp.Arguments[j], flags)
 			if err != nil {
 				return value.Null, errors.WithStack(err)
 			}
@@ -261,12 +264,12 @@ func (i *Interpreter) ProcessFunctionCallExpression(exp *ast.FunctionCallExpress
 	return fn.Call(i.ctx, args...)
 }
 
-func (i *Interpreter) ProcessInfixExpression(exp *ast.InfixExpression, withCondition bool) (value.Value, error) {
-	left, err := i.ProcessExpression(exp.Left, withCondition)
+func (i *Interpreter) ProcessInfixExpression(exp *ast.InfixExpression, flags uint8) (value.Value, error) {
+	left, err := i.ProcessExpression(exp.Left, flags)
 	if err != nil {
 		return value.Null, errors.WithStack(err)
 	}
-	right, err := i.ProcessExpression(exp.Right, withCondition)
+	right, err := i.ProcessExpression(exp.Right, flags)
 	if err != nil {
 		return value.Null, errors.WithStack(err)
 	}
@@ -297,6 +300,11 @@ func (i *Interpreter) ProcessInfixExpression(exp *ast.InfixExpression, withCondi
 		result, opErr = operator.LogicalAnd(left, right)
 	// "+" means string concatenation
 	case "+":
+		if flags&NOCONCAT == NOCONCAT {
+			return value.Null, errors.WithStack(
+				exception.Runtime(&exp.GetMeta().Token, "Unexpected infix operator: %s", exp.Operator),
+			)
+		}
 		result, opErr = operator.Concat(left, right)
 	default:
 		return value.Null, errors.WithStack(
