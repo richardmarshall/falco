@@ -55,7 +55,7 @@ var (
 		&value.Acl{Value: &ast.AclDeclaration{}},
 		&value.String{Value: "_backend_"},
 		&value.String{Value: "1"},
-		&value.Boolean{Value: true, Literal: true},
+		&value.String{Value: "1"},
 		&value.String{Value: "1.500"},
 		&value.Float{Value: 1.5, Literal: true},
 		&value.Ident{Value: "req"},

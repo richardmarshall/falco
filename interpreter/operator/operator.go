@@ -837,6 +837,14 @@ func Concat(left, right value.Value) (value.Value, error) {
 		}
 	}
 
+	// Special case to handle querystring.filter*() requirement that concat
+	// expression values be literal strings.
+	if !left.IsLiteral() && right.String() == "\xFF" {
+		return value.Null, errors.WithStack(
+			fmt.Errorf(""),
+		)
+	}
+
 	return &value.String{
 		Value: left.String() + right.String(),
 	}, nil

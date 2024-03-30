@@ -29,7 +29,7 @@ func Test_Querystring_filter(t *testing.T) {
 		ret, err := Querystring_filter(
 			&context.Context{},
 			tt.input,
-			&value.String{Value: "utm_source" + sep.String() + "utm_medium"},
+			&value.String{Value: "utm_source" + sep.String() + "utm_medium", Literal: true},
 		)
 		if err != nil {
 			t.Errorf("[%d] Unexpected error: %s", i, err)

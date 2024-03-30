@@ -4,6 +4,7 @@ package builtin
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
@@ -19,10 +20,14 @@ func Querystring_filter_except_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Querystring_filter_except_Name, 2, args)
 	}
-	args = shared.CoerceArguments(args, Querystring_filter_except_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Querystring_filter_except_ArgumentTypes[i] {
 			return errors.TypeMismatch(Querystring_filter_except_Name, i+1, Querystring_filter_except_ArgumentTypes[i], args[i].Type())
+		}
+		if i > 0 {
+			if !args[i].IsLiteral() && !strings.Contains(args[i].String(), "\xFF") {
+				return errors.TypeMismatch(Querystring_filter_except_Name, i+1, "STRING LITERAL", args[i].Type())
+			}
 		}
 	}
 	return nil

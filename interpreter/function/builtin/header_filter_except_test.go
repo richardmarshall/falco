@@ -3,13 +3,10 @@
 package builtin
 
 import (
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
-	"github.com/ysugimoto/falco/ast"
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
@@ -25,35 +22,10 @@ func Test_Header_filter_except(t *testing.T) {
 			isExepcted bool
 			isError    bool
 		}{
-			{name: &value.String{Value: "X-Custom-Header"}, isExepcted: true},
-			{name: &value.String{Value: "X-Not-Found"}},
-			{name: &value.String{Value: "Fastly-FF"}},
-			{name: &value.Integer{Value: 10}},
-			{name: &value.Integer{Value: 10, Literal: true}, isError: true},
-			{name: &value.Float{Value: 10}},
-			{name: &value.Float{Value: 10, Literal: true}, isError: true},
-			{name: &value.Boolean{Value: false}},
-			{name: &value.Boolean{Value: true, Literal: true}, isError: true},
-			{name: &value.RTime{Value: time.Second}},
-			{name: &value.RTime{Value: time.Second, Literal: true}, isError: true},
-			{name: &value.Time{Value: time.Now()}, isError: true},
-			{name: &value.IP{Value: net.ParseIP("192.168.0.1")}},
-			{name: &value.Backend{
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}},
-			{name: &value.Backend{
-				Literal: true,
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
-			{name: &value.Acl{
-				Value: &ast.AclDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
+			{name: &value.String{Value: "X-Custom-Header", Literal: true}, isExepcted: true},
+			{name: &value.String{Value: "X-Not-Found", Literal: true}},
+			{name: &value.String{Value: "Fastly-FF", Literal: true}},
+			{name: &value.String{Value: "Fastly-FF"}, isError: true},
 		}
 
 		for i, tt := range tests {

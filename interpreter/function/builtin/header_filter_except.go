@@ -22,13 +22,15 @@ func Header_filter_except_Validate(args []value.Value) error {
 	if len(args) < 2 {
 		return errors.ArgumentAtLeast(Header_filter_except_Name, 2)
 	}
-	args = shared.CoerceArgumentsVariatic(args, Header_filter_except_ArgumentTypes)
 	if args[0].Type() != Header_filter_except_ArgumentTypes[0] {
 		return errors.TypeMismatch(Header_filter_except_Name, 1, Header_filter_except_ArgumentTypes[0], args[0].Type())
 	}
 	for i := range args[1:] {
 		if args[i+1].Type() != Header_filter_except_ArgumentTypes[1] {
 			return errors.TypeMismatch(Header_filter_except_Name, i+1, Header_filter_except_ArgumentTypes[1], args[i+1].Type())
+		}
+		if !args[i+1].IsLiteral() {
+			return errors.TypeMismatch(Header_filter_except_Name, i+1, "STRING LITERAL", args[i+1].Type())
 		}
 	}
 	return nil

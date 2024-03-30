@@ -3,14 +3,11 @@
 package builtin
 
 import (
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"time"
 
-	"github.com/ysugimoto/falco/ast"
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
@@ -56,35 +53,10 @@ func Test_Header_filter(t *testing.T) {
 			isFiltered bool
 			isError    bool
 		}{
-			{name: &value.String{Value: "X-Custom-Header"}, isFiltered: true},
-			{name: &value.String{Value: "X-Not-Found"}},
-			{name: &value.String{Value: "Content-Length"}, isError: true},
-			{name: &value.Integer{Value: 10}},
-			{name: &value.Integer{Value: 10, Literal: true}, isError: true},
-			{name: &value.Float{Value: 10}},
-			{name: &value.Float{Value: 10, Literal: true}, isError: true},
-			{name: &value.Boolean{Value: false}},
-			{name: &value.Boolean{Value: true, Literal: true}, isError: true},
-			{name: &value.RTime{Value: time.Second}},
-			{name: &value.RTime{Value: time.Second, Literal: true}, isError: true},
-			{name: &value.Time{Value: time.Now()}, isError: true},
-			{name: &value.IP{Value: net.ParseIP("192.168.0.1")}},
-			{name: &value.Backend{
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}},
-			{name: &value.Backend{
-				Literal: true,
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
-			{name: &value.Acl{
-				Value: &ast.AclDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
+			{name: &value.String{Value: "X-Custom-Header", Literal: true}, isFiltered: true},
+			{name: &value.String{Value: "X-Not-Found", Literal: true}},
+			{name: &value.String{Value: "X-Not-Found"}, isError: true},
+			{name: &value.String{Value: "Content-Length", Literal: true}, isError: true},
 		}
 
 		for i, tt := range tests {
@@ -124,35 +96,9 @@ func Test_Header_filter(t *testing.T) {
 			isFiltered bool
 			isError    bool
 		}{
-			{name: &value.String{Value: "X-Custom-Header"}, isFiltered: true},
-			{name: &value.String{Value: "X-Not-Found"}},
-			{name: &value.String{Value: "Content-Length"}, isError: true},
-			{name: &value.Integer{Value: 10}},
-			{name: &value.Integer{Value: 10, Literal: true}, isError: true},
-			{name: &value.Float{Value: 10}},
-			{name: &value.Float{Value: 10, Literal: true}, isError: true},
-			{name: &value.Boolean{Value: false}},
-			{name: &value.Boolean{Value: true, Literal: true}, isError: true},
-			{name: &value.RTime{Value: time.Second}},
-			{name: &value.RTime{Value: time.Second, Literal: true}, isError: true},
-			{name: &value.Time{Value: time.Now()}, isError: true},
-			{name: &value.IP{Value: net.ParseIP("192.168.0.1")}},
-			{name: &value.Backend{
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}},
-			{name: &value.Backend{
-				Literal: true,
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
-			{name: &value.Acl{
-				Value: &ast.AclDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
+			{name: &value.String{Value: "X-Custom-Header", Literal: true}, isFiltered: true},
+			{name: &value.String{Value: "X-Not-Found", Literal: true}},
+			{name: &value.String{Value: "Content-Length", Literal: true}, isError: true},
 		}
 
 		for i, tt := range tests {
@@ -192,35 +138,9 @@ func Test_Header_filter(t *testing.T) {
 			isFiltered bool
 			isError    bool
 		}{
-			{name: &value.String{Value: "X-Custom-Header"}, isFiltered: true},
-			{name: &value.String{Value: "X-Not-Found"}},
-			{name: &value.String{Value: "Content-Length"}, isError: true},
-			{name: &value.Integer{Value: 10}},
-			{name: &value.Integer{Value: 10, Literal: true}, isError: true},
-			{name: &value.Float{Value: 10}},
-			{name: &value.Float{Value: 10, Literal: true}, isError: true},
-			{name: &value.Boolean{Value: false}},
-			{name: &value.Boolean{Value: true, Literal: true}, isError: true},
-			{name: &value.RTime{Value: time.Second}},
-			{name: &value.RTime{Value: time.Second, Literal: true}, isError: true},
-			{name: &value.Time{Value: time.Now()}, isError: true},
-			{name: &value.IP{Value: net.ParseIP("192.168.0.1")}},
-			{name: &value.Backend{
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}},
-			{name: &value.Backend{
-				Literal: true,
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
-			{name: &value.Acl{
-				Value: &ast.AclDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
+			{name: &value.String{Value: "X-Custom-Header", Literal: true}, isFiltered: true},
+			{name: &value.String{Value: "X-Not-Found", Literal: true}},
+			{name: &value.String{Value: "Content-Length", Literal: true}, isError: true},
 		}
 
 		for i, tt := range tests {
@@ -262,35 +182,9 @@ func Test_Header_filter(t *testing.T) {
 			isFiltered bool
 			isError    bool
 		}{
-			{name: &value.String{Value: "X-Custom-Header"}, isFiltered: true},
-			{name: &value.String{Value: "X-Not-Found"}},
-			{name: &value.String{Value: "Content-Length"}, isError: true},
-			{name: &value.Integer{Value: 10}},
-			{name: &value.Integer{Value: 10, Literal: true}, isError: true},
-			{name: &value.Float{Value: 10}},
-			{name: &value.Float{Value: 10, Literal: true}, isError: true},
-			{name: &value.Boolean{Value: false}},
-			{name: &value.Boolean{Value: true, Literal: true}, isError: true},
-			{name: &value.RTime{Value: time.Second}},
-			{name: &value.RTime{Value: time.Second, Literal: true}, isError: true},
-			{name: &value.Time{Value: time.Now()}, isError: true},
-			{name: &value.IP{Value: net.ParseIP("192.168.0.1")}},
-			{name: &value.Backend{
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}},
-			{name: &value.Backend{
-				Literal: true,
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
-			{name: &value.Acl{
-				Value: &ast.AclDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
+			{name: &value.String{Value: "X-Custom-Header", Literal: true}, isFiltered: true},
+			{name: &value.String{Value: "X-Not-Found", Literal: true}},
+			{name: &value.String{Value: "Content-Length", Literal: true}, isError: true},
 		}
 
 		for i, tt := range tests {
@@ -332,35 +226,9 @@ func Test_Header_filter(t *testing.T) {
 			isFiltered bool
 			isError    bool
 		}{
-			{name: &value.String{Value: "X-Custom-Header"}, isFiltered: true},
-			{name: &value.String{Value: "X-Not-Found"}},
-			{name: &value.String{Value: "Content-Length"}, isError: true},
-			{name: &value.Integer{Value: 10}},
-			{name: &value.Integer{Value: 10, Literal: true}, isError: true},
-			{name: &value.Float{Value: 10}},
-			{name: &value.Float{Value: 10, Literal: true}, isError: true},
-			{name: &value.Boolean{Value: false}},
-			{name: &value.Boolean{Value: true, Literal: true}, isError: true},
-			{name: &value.RTime{Value: time.Second}},
-			{name: &value.RTime{Value: time.Second, Literal: true}, isError: true},
-			{name: &value.Time{Value: time.Now()}, isError: true},
-			{name: &value.IP{Value: net.ParseIP("192.168.0.1")}},
-			{name: &value.Backend{
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}},
-			{name: &value.Backend{
-				Literal: true,
-				Value: &ast.BackendDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
-			{name: &value.Acl{
-				Value: &ast.AclDeclaration{
-					Name: &ast.Ident{Value: "example"},
-				},
-			}, isError: true},
+			{name: &value.String{Value: "X-Custom-Header", Literal: true}, isFiltered: true},
+			{name: &value.String{Value: "X-Not-Found", Literal: true}},
+			{name: &value.String{Value: "Content-Length", Literal: true}, isError: true},
 		}
 
 		for i, tt := range tests {
@@ -402,9 +270,9 @@ func Test_Header_filter(t *testing.T) {
 			isFiltered bool
 			isError    bool
 		}{
-			{name: &value.String{Value: "Object:foo"}, isFiltered: true},
-			{name: &value.String{Value: "Object:bar"}, isFiltered: false},
-			{name: &value.String{Value: "Object:baz"}, isFiltered: false},
+			{name: &value.String{Value: "Object:foo", Literal: true}, isFiltered: true},
+			{name: &value.String{Value: "Object:bar", Literal: true}, isFiltered: false},
+			{name: &value.String{Value: "Object:baz", Literal: true}, isFiltered: false},
 		}
 		for i, tt := range tests {
 			req := httptest.NewRequest(http.MethodGet, "http://localhost:3124", nil)

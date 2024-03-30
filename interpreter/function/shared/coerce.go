@@ -55,8 +55,8 @@ func stringArgument(v value.Value) value.Value {
 	case value.IdentType, value.AclType:
 		return v
 	}
-	// Non-string literals are not coerced.
-	if v.IsLiteral() {
+	// Non-string literals are not coerced. With the exception of the bool type.
+	if v.Type() != value.BooleanType && v.IsLiteral() {
 		return v
 	}
 	return &value.String{Value: v.String()}
