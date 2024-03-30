@@ -99,6 +99,7 @@ import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/value"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 )
 
 const {{ .Name }}_Name = "{{ .Original }}"
@@ -120,6 +121,7 @@ func {{ .Name }}_Validate(args []value.Value) error {
 	{{ end -}}
 
 	{{ if not .NoArgument -}}
+	args = shared.CoerceArguments(args, {{ .Name }}_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != {{ .Name }}_ArgumentTypes[i] {
 			return errors.TypeMismatch({{ .Name }}_Name, i+1, {{ .Name }}_ArgumentTypes[i], args[i].Type())
