@@ -6,6 +6,7 @@ import (
 	"github.com/ysugimoto/falco/ast"
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -17,6 +18,7 @@ func Table_lookup_bool_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Table_lookup_bool_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Table_lookup_bool_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Table_lookup_bool_ArgumentTypes[i] {
 			return errors.TypeMismatch(Table_lookup_bool_Name, i+1, Table_lookup_bool_ArgumentTypes[i], args[i].Type())

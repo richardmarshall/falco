@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Querystring_get_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Querystring_get_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Querystring_get_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Querystring_get_ArgumentTypes[i] {
 			return errors.TypeMismatch(Querystring_get_Name, i+1, Querystring_get_ArgumentTypes[i], args[i].Type())

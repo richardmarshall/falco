@@ -5,20 +5,20 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
 const Early_hints_Name = "early_hints"
 
-var Early_hints_ArgumentTypes = []value.Type{value.StringType}
-
 func Early_hints_Validate(args []value.Value) error {
 	if len(args) == 0 {
 		return errors.ArgumentAtLeast(Early_hints_Name, 1)
 	}
+	args = shared.CoerceArgumentsVariatic(args, []value.Type{value.StringType})
 	for i := range args {
-		if args[i].Type() != Early_hints_ArgumentTypes[i] {
-			return errors.TypeMismatch(Early_hints_Name, i+1, Early_hints_ArgumentTypes[i], args[i].Type())
+		if args[i].Type() != value.StringType {
+			return errors.TypeMismatch(Early_hints_Name, i+1, value.StringType, args[i].Type())
 		}
 	}
 	return nil

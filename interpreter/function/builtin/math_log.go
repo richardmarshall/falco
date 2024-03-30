@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Math_log_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Math_log_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Math_log_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Math_log_ArgumentTypes[i] {
 			return errors.TypeMismatch(Math_log_Name, i+1, Math_log_ArgumentTypes[i], args[i].Type())

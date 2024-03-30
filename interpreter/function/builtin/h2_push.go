@@ -5,18 +5,22 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
 const H2_push_Name = "h2.push"
 
+var H2_push_ArgumentTypes = []value.Type{value.StringType, value.StringType}
+
 func H2_push_Validate(args []value.Value) error {
-	if len(args) < 1 {
-		return errors.ArgumentNotEnough(H2_push_Name, 1, args)
+	if len(args) < 1 || len(args) > 2 {
+		return errors.ArgumentNotInRange(H2_push_Name, 1, 2, args)
 	}
+	args = shared.CoerceArguments(args, H2_push_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != value.StringType {
-			return errors.TypeMismatch(H2_push_Name, i+1, value.StringType, args[i].Type())
+			return errors.TypeMismatch(H2_push_Name, i+1, H2_push_ArgumentTypes[i], args[i].Type())
 		}
 	}
 	return nil
@@ -24,6 +28,7 @@ func H2_push_Validate(args []value.Value) error {
 
 // Fastly built-in function implementation of h2.push
 // Arguments may be:
+// - STRING
 // - STRING, STRING
 // Reference: https://developer.fastly.com/reference/vcl/functions/tls-and-http/h2-push/
 func H2_push(ctx *context.Context, args ...value.Value) (value.Value, error) {

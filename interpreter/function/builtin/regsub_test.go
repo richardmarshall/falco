@@ -19,6 +19,7 @@ func Test_Regsub(t *testing.T) {
 		pattern     string
 		replacement string
 		expect      string
+		isError     bool
 	}{
 		{input: "www.example.com", pattern: "www\\.", replacement: "", expect: "example.com"},
 		{input: "/foo/bar/", pattern: "/$", replacement: "", expect: "/foo/bar"},

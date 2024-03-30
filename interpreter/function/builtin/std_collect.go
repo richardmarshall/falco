@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Std_collect_Validate(args []value.Value) error {
 	if len(args) < 1 || len(args) > 2 {
 		return errors.ArgumentNotInRange(Std_collect_Name, 1, 2, args)
 	}
+	args = shared.CoerceArguments(args, Std_collect_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_collect_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_collect_Name, i+1, Std_collect_ArgumentTypes[i], args[i].Type())

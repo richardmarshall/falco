@@ -15,6 +15,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -26,6 +27,7 @@ func Digest_rsa_verify_Validate(args []value.Value) error {
 	if len(args) < 4 || len(args) > 5 {
 		return errors.ArgumentNotInRange(Digest_rsa_verify_Name, 4, 5, args)
 	}
+	args = shared.CoerceArguments(args, Digest_rsa_verify_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Digest_rsa_verify_ArgumentTypes[i] {
 			return errors.TypeMismatch(Digest_rsa_verify_Name, i+1, Digest_rsa_verify_ArgumentTypes[i], args[i].Type())

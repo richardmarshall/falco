@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Ratelimit_check_rates_Validate(args []value.Value) error {
 	if len(args) != 11 {
 		return errors.ArgumentNotEnough(Ratelimit_check_rates_Name, 11, args)
 	}
+	args = shared.CoerceArguments(args, Ratelimit_check_rates_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Ratelimit_check_rates_ArgumentTypes[i] {
 			return errors.TypeMismatch(Ratelimit_check_rates_Name, i+1, Ratelimit_check_rates_ArgumentTypes[i], args[i].Type())

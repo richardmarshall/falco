@@ -9,6 +9,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -20,6 +21,7 @@ func Digest_hash_sha256_from_base64_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Digest_hash_sha256_from_base64_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Digest_hash_sha256_from_base64_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Digest_hash_sha256_from_base64_ArgumentTypes[i] {
 			return errors.TypeMismatch(Digest_hash_sha256_from_base64_Name, i+1, Digest_hash_sha256_from_base64_ArgumentTypes[i], args[i].Type())

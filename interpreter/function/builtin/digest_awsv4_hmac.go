@@ -10,6 +10,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -21,6 +22,7 @@ func Digest_awsv4_hmac_Validate(args []value.Value) error {
 	if len(args) != 5 {
 		return errors.ArgumentNotEnough(Digest_awsv4_hmac_Name, 5, args)
 	}
+	args = shared.CoerceArguments(args, Digest_awsv4_hmac_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Digest_awsv4_hmac_ArgumentTypes[i] {
 			return errors.TypeMismatch(Digest_awsv4_hmac_Name, i+1, Digest_awsv4_hmac_ArgumentTypes[i], args[i].Type())

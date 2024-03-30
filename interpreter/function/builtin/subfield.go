@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Subfield_Validate(args []value.Value) error {
 	if len(args) < 2 || len(args) > 3 {
 		return errors.ArgumentNotInRange(Subfield_Name, 2, 3, args)
 	}
+	args = shared.CoerceArguments(args, Subfield_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Subfield_ArgumentTypes[i] {
 			return errors.TypeMismatch(Subfield_Name, i+1, Subfield_ArgumentTypes[i], args[i].Type())

@@ -19,6 +19,7 @@ func Math_tanh_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Math_tanh_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Math_tanh_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Math_tanh_ArgumentTypes[i] {
 			return errors.TypeMismatch(Math_tanh_Name, i+1, Math_tanh_ArgumentTypes[i], args[i].Type())

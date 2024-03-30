@@ -19,7 +19,6 @@ import (
 // - ID, STRING_LIST
 // Reference: https://developer.fastly.com/reference/vcl/functions/headers/header-filter-except/
 func Test_Header_filter_except(t *testing.T) {
-
 	t.Run("filter except from req", func(t *testing.T) {
 		tests := []struct {
 			name       value.Value
@@ -34,7 +33,7 @@ func Test_Header_filter_except(t *testing.T) {
 			{name: &value.Float{Value: 10}},
 			{name: &value.Float{Value: 10, Literal: true}, isError: true},
 			{name: &value.Boolean{Value: false}},
-			{name: &value.Boolean{Value: true, Literal: true}}, // BOOL could be provide as literal
+			{name: &value.Boolean{Value: true, Literal: true}, isError: true},
 			{name: &value.RTime{Value: time.Second}},
 			{name: &value.RTime{Value: time.Second, Literal: true}, isError: true},
 			{name: &value.Time{Value: time.Now()}, isError: true},

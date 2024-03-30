@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Std_strpad_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Std_strpad_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Std_strpad_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_strpad_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_strpad_Name, i+1, Std_strpad_ArgumentTypes[i], args[i].Type())

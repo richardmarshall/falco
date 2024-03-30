@@ -19,6 +19,7 @@ func Math_sinh_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Math_sinh_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Math_sinh_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Math_sinh_ArgumentTypes[i] {
 			return errors.TypeMismatch(Math_sinh_Name, i+1, Math_sinh_ArgumentTypes[i], args[i].Type())

@@ -19,6 +19,7 @@ func Crypto_encrypt_base64_Validate(args []value.Value) error {
 	if len(args) != 6 {
 		return errors.ArgumentNotEnough(Crypto_encrypt_base64_Name, 6, args)
 	}
+	args = shared.CoerceArguments(args, Crypto_encrypt_base64_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Crypto_encrypt_base64_ArgumentTypes[i] {
 			return errors.TypeMismatch(Crypto_encrypt_base64_Name, i+1, Crypto_encrypt_base64_ArgumentTypes[i], args[i].Type())

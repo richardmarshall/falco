@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Std_atoi_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Std_atoi_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Std_atoi_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_atoi_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_atoi_Name, i+1, Std_atoi_ArgumentTypes[i], args[i].Type())

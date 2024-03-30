@@ -19,6 +19,7 @@ func Math_atan2_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Math_atan2_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Math_atan2_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Math_atan2_ArgumentTypes[i] {
 			return errors.TypeMismatch(Math_atan2_Name, i+1, Math_atan2_ArgumentTypes[i], args[i].Type())

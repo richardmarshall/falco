@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -13,8 +14,9 @@ const H2_disable_header_compression_Name = "h2.disable_header_compression"
 func H2_disable_header_compression_Validate(args []value.Value) error {
 	// Note: this function accepts variadic arguments
 	if len(args) == 0 {
-		return errors.New(H2_disable_header_compression_Name, "At least 1 arguments")
+		return errors.ArgumentAtLeast(H2_disable_header_compression_Name, 1)
 	}
+	args = shared.CoerceArgumentsVariatic(args, []value.Type{value.StringType})
 	for i := range args {
 		if args[i].Type() != value.StringType {
 			return errors.TypeMismatch(H2_disable_header_compression_Name, i+1, value.StringType, args[i].Type())
@@ -25,7 +27,7 @@ func H2_disable_header_compression_Validate(args []value.Value) error {
 
 // Fastly built-in function implementation of h2.disable_header_compression
 // Arguments may be:
-// - STRING_LIST
+// - STRING, STRING_LIST
 // Reference: https://developer.fastly.com/reference/vcl/functions/tls-and-http/h2-disable-header-compression/
 func H2_disable_header_compression(ctx *context.Context, args ...value.Value) (value.Value, error) {
 	// Argument validations

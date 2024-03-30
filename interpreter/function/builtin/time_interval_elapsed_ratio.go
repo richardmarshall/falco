@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Time_interval_elapsed_ratio_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Time_interval_elapsed_ratio_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Time_interval_elapsed_ratio_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Time_interval_elapsed_ratio_ArgumentTypes[i] {
 			return errors.TypeMismatch(Time_interval_elapsed_ratio_Name, i+1, Time_interval_elapsed_ratio_ArgumentTypes[i], args[i].Type())

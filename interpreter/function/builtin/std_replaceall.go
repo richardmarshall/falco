@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Std_replaceall_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Std_replaceall_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Std_replaceall_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_replaceall_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_replaceall_Name, i+1, Std_replaceall_ArgumentTypes[i], args[i].Type())

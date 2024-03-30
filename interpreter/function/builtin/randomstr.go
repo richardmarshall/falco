@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Randomstr_Validate(args []value.Value) error {
 	if len(args) < 1 || len(args) > 2 {
 		return errors.ArgumentNotInRange(Randomstr_Name, 1, 2, args)
 	}
+	args = shared.CoerceArguments(args, Randomstr_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Randomstr_ArgumentTypes[i] {
 			return errors.TypeMismatch(Randomstr_Name, i+1, Randomstr_ArgumentTypes[i], args[i].Type())

@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Std_itoa_charset_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Std_itoa_charset_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Std_itoa_charset_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_itoa_charset_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_itoa_charset_Name, i+1, Std_itoa_charset_ArgumentTypes[i], args[i].Type())

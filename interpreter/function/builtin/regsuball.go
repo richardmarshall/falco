@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Regsuball_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Regsuball_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Regsuball_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Regsuball_ArgumentTypes[i] {
 			return errors.TypeMismatch(Regsuball_Name, i+1, Regsuball_ArgumentTypes[i], args[i].Type())

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Parse_time_delta_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Parse_time_delta_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Parse_time_delta_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Parse_time_delta_ArgumentTypes[i] {
 			return errors.TypeMismatch(Parse_time_delta_Name, i+1, Parse_time_delta_ArgumentTypes[i], args[i].Type())

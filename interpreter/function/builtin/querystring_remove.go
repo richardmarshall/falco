@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Querystring_remove_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Querystring_remove_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Querystring_remove_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Querystring_remove_ArgumentTypes[i] {
 			return errors.TypeMismatch(Querystring_remove_Name, i+1, Querystring_remove_ArgumentTypes[i], args[i].Type())

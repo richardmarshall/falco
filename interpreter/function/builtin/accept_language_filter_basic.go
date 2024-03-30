@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Accept_language_filter_basic_Validate(args []value.Value) error {
 	if len(args) != 4 {
 		return errors.ArgumentNotEnough(Accept_language_filter_basic_Name, 4, args)
 	}
+	args = shared.CoerceArguments(args, Accept_language_filter_basic_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Accept_language_filter_basic_ArgumentTypes[i] {
 			return errors.TypeMismatch(Accept_language_filter_basic_Name, i+1, Accept_language_filter_basic_ArgumentTypes[i], args[i].Type())

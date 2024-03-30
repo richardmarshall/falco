@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Xml_escape_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Xml_escape_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Xml_escape_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Xml_escape_ArgumentTypes[i] {
 			return errors.TypeMismatch(Xml_escape_Name, i+1, Xml_escape_ArgumentTypes[i], args[i].Type())

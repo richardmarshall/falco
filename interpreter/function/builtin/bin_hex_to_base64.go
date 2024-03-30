@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Bin_hex_to_base64_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Bin_hex_to_base64_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Bin_hex_to_base64_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Bin_hex_to_base64_ArgumentTypes[i] {
 			return errors.TypeMismatch(Bin_hex_to_base64_Name, i+1, Bin_hex_to_base64_ArgumentTypes[i], args[i].Type())

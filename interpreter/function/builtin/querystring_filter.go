@@ -19,6 +19,7 @@ func Querystring_filter_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Querystring_filter_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Querystring_filter_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Querystring_filter_ArgumentTypes[i] {
 			return errors.TypeMismatch(Querystring_filter_Name, i+1, Querystring_filter_ArgumentTypes[i], args[i].Type())

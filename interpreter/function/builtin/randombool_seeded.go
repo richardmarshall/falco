@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Randombool_seeded_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Randombool_seeded_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Randombool_seeded_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Randombool_seeded_ArgumentTypes[i] {
 			return errors.TypeMismatch(Randombool_seeded_Name, i+1, Randombool_seeded_ArgumentTypes[i], args[i].Type())

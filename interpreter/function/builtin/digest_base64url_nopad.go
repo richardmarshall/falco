@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Digest_base64url_nopad_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Digest_base64url_nopad_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Digest_base64url_nopad_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Digest_base64url_nopad_ArgumentTypes[i] {
 			return errors.TypeMismatch(Digest_base64url_nopad_Name, i+1, Digest_base64url_nopad_ArgumentTypes[i], args[i].Type())

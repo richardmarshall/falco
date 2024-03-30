@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Time_hex_to_time_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Time_hex_to_time_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Time_hex_to_time_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Time_hex_to_time_ArgumentTypes[i] {
 			return errors.TypeMismatch(Time_hex_to_time_Name, i+1, Time_hex_to_time_ArgumentTypes[i], args[i].Type())

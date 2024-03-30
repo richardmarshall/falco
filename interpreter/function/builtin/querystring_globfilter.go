@@ -18,6 +18,7 @@ func Querystring_globfilter_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Querystring_globfilter_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Querystring_globfilter_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Querystring_globfilter_ArgumentTypes[i] {
 			return errors.TypeMismatch(Querystring_globfilter_Name, i+1, Querystring_globfilter_ArgumentTypes[i], args[i].Type())

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Std_toupper_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Std_toupper_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Std_toupper_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_toupper_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_toupper_Name, i+1, Std_toupper_ArgumentTypes[i], args[i].Type())

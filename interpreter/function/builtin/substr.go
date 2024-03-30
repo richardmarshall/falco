@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Substr_Validate(args []value.Value) error {
 	if len(args) < 2 || len(args) > 3 {
 		return errors.ArgumentNotInRange(Substr_Name, 2, 3, args)
 	}
+	args = shared.CoerceArguments(args, Substr_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Substr_ArgumentTypes[i] {
 			return errors.TypeMismatch(Substr_Name, i+1, Substr_ArgumentTypes[i], args[i].Type())

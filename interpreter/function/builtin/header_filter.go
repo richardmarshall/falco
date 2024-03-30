@@ -16,14 +16,20 @@ import (
 
 const Header_filter_Name = "header.filter"
 
-var Header_filter_ArgumentTypes = []value.Type{value.IdentType}
+var Header_filter_ArgumentTypes = []value.Type{value.IdentType, value.StringType}
 
 func Header_filter_Validate(args []value.Value) error {
 	if len(args) < 2 {
 		return errors.ArgumentAtLeast(Header_filter_Name, 2)
 	}
+	args = shared.CoerceArgumentsVariatic(args, Header_filter_ArgumentTypes)
 	if args[0].Type() != Header_filter_ArgumentTypes[0] {
 		return errors.TypeMismatch(Header_filter_Name, 1, Header_filter_ArgumentTypes[0], args[0].Type())
+	}
+	for i := range args[1:] {
+		if args[i+1].Type() != Header_filter_ArgumentTypes[1] {
+			return errors.TypeMismatch(Header_filter_Name, i+2, Header_filter_ArgumentTypes[1], args[i+1].Type())
+		}
 	}
 	return nil
 }

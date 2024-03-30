@@ -12,6 +12,7 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -23,6 +24,7 @@ func Digest_time_hmac_sha256_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Digest_time_hmac_sha256_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Digest_time_hmac_sha256_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Digest_time_hmac_sha256_ArgumentTypes[i] {
 			return errors.TypeMismatch(Digest_time_hmac_sha256_Name, i+1, Digest_time_hmac_sha256_ArgumentTypes[i], args[i].Type())

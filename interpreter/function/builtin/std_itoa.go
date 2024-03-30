@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Std_itoa_Validate(args []value.Value) error {
 	if len(args) < 1 || len(args) > 2 {
 		return errors.ArgumentNotInRange(Std_itoa_Name, 1, 2, args)
 	}
+	args = shared.CoerceArguments(args, Std_itoa_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_itoa_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_itoa_Name, i+1, Std_itoa_ArgumentTypes[i], args[i].Type())

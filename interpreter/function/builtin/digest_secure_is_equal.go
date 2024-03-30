@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Digest_secure_is_equal_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Digest_secure_is_equal_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Digest_secure_is_equal_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Digest_secure_is_equal_ArgumentTypes[i] {
 			return errors.TypeMismatch(Digest_secure_is_equal_Name, i+1, Digest_secure_is_equal_ArgumentTypes[i], args[i].Type())

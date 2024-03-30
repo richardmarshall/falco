@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Setcookie_delete_by_name_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Setcookie_delete_by_name_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Setcookie_delete_by_name_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Setcookie_delete_by_name_ArgumentTypes[i] {
 			return errors.TypeMismatch(Setcookie_delete_by_name_Name, i+1, Setcookie_delete_by_name_ArgumentTypes[i], args[i].Type())

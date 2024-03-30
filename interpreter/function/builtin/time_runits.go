@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Time_runits_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Time_runits_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Time_runits_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Time_runits_ArgumentTypes[i] {
 			return errors.TypeMismatch(Time_runits_Name, i+1, Time_runits_ArgumentTypes[i], args[i].Type())

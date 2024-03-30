@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Std_replace_suffix_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Std_replace_suffix_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Std_replace_suffix_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Std_replace_suffix_ArgumentTypes[i] {
 			return errors.TypeMismatch(Std_replace_suffix_Name, i+1, Std_replace_suffix_ArgumentTypes[i], args[i].Type())

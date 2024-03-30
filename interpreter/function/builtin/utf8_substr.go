@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Utf8_substr_Validate(args []value.Value) error {
 	if len(args) < 2 || len(args) > 3 {
 		return errors.ArgumentNotInRange(Utf8_substr_Name, 2, 3, args)
 	}
+	args = shared.CoerceArguments(args, Utf8_substr_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Utf8_substr_ArgumentTypes[i] {
 			return errors.TypeMismatch(Utf8_substr_Name, i+1, Utf8_substr_ArgumentTypes[i], args[i].Type())

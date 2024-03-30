@@ -5,6 +5,7 @@ package builtin
 import (
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -16,6 +17,7 @@ func Table_contains_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Table_contains_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Table_contains_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Table_contains_ArgumentTypes[i] {
 			return errors.TypeMismatch(Table_contains_Name, i+1, Table_contains_ArgumentTypes[i], args[i].Type())

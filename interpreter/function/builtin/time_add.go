@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -18,6 +19,7 @@ func Time_add_Validate(args []value.Value) error {
 	if len(args) != 2 {
 		return errors.ArgumentNotEnough(Time_add_Name, 2, args)
 	}
+	args = shared.CoerceArguments(args, Time_add_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Time_add_ArgumentTypes[i] {
 			if i != 1 {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -19,6 +20,7 @@ func Addr_extract_bits_Validate(args []value.Value) error {
 	if len(args) != 3 {
 		return errors.ArgumentNotEnough(Addr_extract_bits_Name, 3, args)
 	}
+	args = shared.CoerceArguments(args, Addr_extract_bits_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Addr_extract_bits_ArgumentTypes[i] {
 			return errors.TypeMismatch(Addr_extract_bits_Name, i+1, Addr_extract_bits_ArgumentTypes[i], args[i].Type())

@@ -17,6 +17,7 @@ func Querystring_sort_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Querystring_sort_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Querystring_sort_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Querystring_sort_ArgumentTypes[i] {
 			return errors.TypeMismatch(Querystring_sort_Name, i+1, Querystring_sort_ArgumentTypes[i], args[i].Type())

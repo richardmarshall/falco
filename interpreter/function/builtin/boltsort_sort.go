@@ -10,6 +10,7 @@ import (
 
 	"github.com/ysugimoto/falco/interpreter/context"
 	"github.com/ysugimoto/falco/interpreter/function/errors"
+	"github.com/ysugimoto/falco/interpreter/function/shared"
 	"github.com/ysugimoto/falco/interpreter/value"
 )
 
@@ -21,6 +22,7 @@ func Boltsort_sort_Validate(args []value.Value) error {
 	if len(args) != 1 {
 		return errors.ArgumentNotEnough(Boltsort_sort_Name, 1, args)
 	}
+	args = shared.CoerceArguments(args, Boltsort_sort_ArgumentTypes)
 	for i := range args {
 		if args[i].Type() != Boltsort_sort_ArgumentTypes[i] {
 			return errors.TypeMismatch(Boltsort_sort_Name, i+1, Boltsort_sort_ArgumentTypes[i], args[i].Type())
