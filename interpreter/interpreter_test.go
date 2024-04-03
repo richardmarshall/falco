@@ -27,6 +27,30 @@ backend example {
 	)
 }
 
+func runVCL(vcl string) (*Interpreter, error) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	}))
+	// server.EnableHTTP2 = true
+	defer server.Close()
+
+	parsed, err := url.Parse(server.URL)
+	if err != nil {
+		return nil, err
+	}
+
+	vcl = defaultBackend(parsed) + "\n" + vcl
+	ip := New(context.WithResolver(
+		resolver.NewStaticResolver("main", vcl),
+	))
+	ip.ServeHTTP(
+		httptest.NewRecorder(),
+		httptest.NewRequest(http.MethodGet, "http://localhost", nil),
+	)
+	return ip, nil
+}
+
 func assertInterpreter(t *testing.T, vcl string, scope context.Scope, assertions map[string]value.Value, isError bool) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
