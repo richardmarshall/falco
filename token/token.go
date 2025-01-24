@@ -7,13 +7,14 @@ import (
 type TokenType string
 
 type Token struct {
-	Type     TokenType
-	Literal  string
-	Line     int
-	Position int
-	Offset   int    // for print problem
-	File     string // for print problem
-	Snippet  bool
+	Type      TokenType
+	Literal   string
+	Line      int
+	Position  int
+	Offset    int    // for print problem
+	File      string // for print problem
+	Snippet   bool
+	Auxiliary string // for heredoc labels
 }
 
 func (t Token) String() string {

@@ -201,6 +201,6 @@ sub vcl_log {
 
 #FASTLY log
 
-  log {"syslog "} req.service_id {" fastly-log :: "} {" method: "} req.method {" url: "} req.url
+  log {x"syslog "x} req.service_id {y" fastly-log :: "y} {z" method: "z} req.method {" url: "} req.url
       {" status: "} resp.status;
 }

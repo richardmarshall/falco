@@ -12,6 +12,7 @@ func TestLexer(t *testing.T) {
 	input := `
 {" foobar "}
 {" foo\"bar "}
+{1_xyz" foo\"bar "1_xyz}
 import boltsort;
 include "feature_mod";
 
@@ -101,6 +102,8 @@ sub vcl_recv {
 		{Type: token.STRING, Literal: " foobar "},
 		{Type: token.LF, Literal: "\n"},
 		{Type: token.STRING, Literal: ` foo\"bar `},
+		{Type: token.LF, Literal: "\n"},
+		{Type: token.STRING, Literal: ` foo\"bar `, Auxiliary: "1_xyz"},
 		{Type: token.LF, Literal: "\n"},
 
 		// import

@@ -3,7 +3,9 @@ package lexer
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"github.com/ysugimoto/falco/token"
@@ -64,11 +66,20 @@ func (l *Lexer) readChar() {
 }
 
 func (l *Lexer) peekChar() rune {
-	b, err := l.r.Peek(1)
+	return l.peekCharN(1)
+}
+
+func (l *Lexer) peekCharN(n int) rune {
+	b := l.peekN(n)
+	return rune(b[len(b)-1])
+}
+
+func (l *Lexer) peekN(n int) []byte {
+	b, err := l.r.Peek(n)
 	if err != nil {
-		return 0x00
+		return []byte{0x00}
 	}
-	return rune(b[0])
+	return b
 }
 
 func (l *Lexer) NewLine() {
@@ -129,12 +140,15 @@ func (l *Lexer) NextToken() token.Token {
 	case '{':
 		// VCL allows bracket enclosed string like {" foobar "},
 		// it is convenient to make string that includes whitespace, TAB, etc.
-		// So, lexer should lex it.
-		if l.peekChar() == '"' {
-			l.readChar()
+		// Bracket strings can also have heredoc style delimiters in the format of
+		// {delim"my string"delim}. This is useful for in cases where a string
+		// value might contain `"}` for example a JSON value.
+		if delim, ok := l.readBracketStringOpen(); ok {
 			t = newToken(token.STRING, l.char, line, index)
-			t.Literal = l.readBracketString()
-			t.Offset = 4 // {" and "}
+			t.Literal = l.readBracketString(delim)
+			t.Offset = 4 + 2*len(delim) // 2 x length of delimiter and {" "}
+			fmt.Fprintf(os.Stderr, "len(t.Offset) = %d\n", t.Offset)
+			t.Auxiliary = delim
 		} else {
 			t = newToken(token.LEFT_BRACE, l.char, line, index)
 		}

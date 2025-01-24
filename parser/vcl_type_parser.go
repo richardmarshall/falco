@@ -35,8 +35,9 @@ func (p *Parser) ParseString() (*ast.String, error) {
 	}
 
 	return &ast.String{
-		Meta:  p.curToken,
-		Value: Parsed,
+		Meta:    p.curToken,
+		Value:   Parsed,
+		Heredoc: p.curToken.Token.Auxiliary,
 	}, nil
 }
 

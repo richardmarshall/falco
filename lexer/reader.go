@@ -28,7 +28,30 @@ func (l *Lexer) readString() string {
 	return buf.String()
 }
 
-func (l *Lexer) readBracketString() string {
+func (l *Lexer) readBracketStringOpen() (string, bool) {
+	buf := pool.Get().(*bytes.Buffer) // nolint:errcheck
+	defer pool.Put(buf)
+	buf.Reset()
+
+	p := l.peekCharN(1)
+	// Delimiters are VCL identifiers with the added restriction of no `.`s.
+	for i := 2; (l.isLetter(p) || isDigit(p)) && p != '.'; i++ {
+		buf.WriteRune(p)
+		p = l.peekCharN(i)
+	}
+
+	if p != '"' {
+		return "", false
+	}
+
+	// Advance past delimiter.
+	for i := 0; i <= buf.Len(); i++ {
+		l.readChar()
+	}
+	return buf.String(), true
+}
+
+func (l *Lexer) readBracketString(delim string) string {
 	buf := pool.Get().(*bytes.Buffer) // nolint:errcheck
 	defer pool.Put(buf)
 	buf.Reset()
@@ -39,8 +62,11 @@ func (l *Lexer) readBracketString() string {
 			break
 		}
 		if l.char == '"' {
-			if l.peekChar() == '}' {
-				l.readChar()
+			if string(l.peekN(len(delim)+1)) == delim+"}" {
+				// Advance past delimiter.
+				for i := 0; i <= len(delim); i++ {
+					l.readChar()
+				}
 				break
 			}
 		}
