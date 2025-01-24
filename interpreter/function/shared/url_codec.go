@@ -151,6 +151,8 @@ func UrlDecode(src string) (string, error) {
 
 				decoded = append(decoded, multiBytes...)
 			}
+		case b == 0x2b: // "+"
+			decoded = append(decoded, ' ')
 		default:
 			decoded = append(decoded, byte(b))
 		}

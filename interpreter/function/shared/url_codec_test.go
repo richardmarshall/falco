@@ -125,6 +125,10 @@ func TestUrlDecode(t *testing.T) {
 			input:  "hello%20world",
 			expect: "hello world",
 		},
+		{
+			input:  "hello+world",
+			expect: "hello world",
+		},
 	}
 
 	for i, tt := range tests {
